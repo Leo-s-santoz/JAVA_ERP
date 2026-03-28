@@ -67,6 +67,43 @@
 
             <div th:if="${erro}" class="alert alert-danger text-center mt-3" th:text="${erro}"></div>
 
+            <form method="get" th:action="@{/estoqueProduto}" class="row g-3 mb-4 w-100 px-3">
+
+                <!-- Nome -->
+                <div class="col-md-4">
+                    <input type="text" name="nome" class="form-control" placeholder="Buscar por nome"
+                        th:value="${nome}">
+                </div>
+
+                <!-- Unidade -->
+                <div class="col-md-3">
+                    <select name="unidade" class="form-select">
+                        <option value="">Unidade</option>
+                        <option value="KG" th:selected="${unidade == 'KG'}">KG</option>
+                        <option value="UN" th:selected="${unidade == 'UN'}">UN</option>
+                        <option value="L" th:selected="${unidade == 'L'}">L</option>
+                    </select>
+                </div>
+
+                <!-- Estoque Baixo -->
+                <div class="col-md-3">
+                    <select name="estoqueBaixo" class="form-select">
+                        <option value="">Estoque</option>
+                        <option value="true" th:selected="${estoqueBaixo == true}">
+                            Estoque Baixo
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Botão -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Filtrar
+                    </button>
+                </div>
+
+            </form>
+
             <!--Tabela-->
             <table class="table" id="tabela_produtos">
                 <thead>
@@ -79,7 +116,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="produto:${listaProduto}">
+                    <tr th:each="produto:${listaProduto}"
+                        th:classappend="${produto.quantidadeAtual <= produto.quantidadeMinima} ? 'table-danger'">
                         <td th:text="${produto.nome}"></td>
                         <td th:text="${produto.descricao}"></td>
                         <td th:text="${produto.quantidadeAtual}"></td>

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,17 +53,38 @@ public class ProdutoController {
         return cadastrar(produto.get());
     }
 
+    //remover esse endpoint
+    @GetMapping("/listaCompras")
+    public ModelAndView listaCompras(){
+        ModelAndView modelAndView = new ModelAndView("estoque/produto/compras");
+        modelAndView.addObject("itensCompra", listaCompras.gerarListaCompras());
+        return modelAndView;
+    }
+
+    /*
     @GetMapping("/estoqueProduto")
     public ModelAndView listar(){
         ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
         modelAndView.addObject("listaProduto", produtoRepository.findAll());
         return modelAndView;
     }
+    */
+    @GetMapping("/estoqueProduto")
+    public ModelAndView filtrarProdutos(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String unidade,
+            @RequestParam(required = false) Boolean estoqueBaixo
+    ){
+        ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
 
-    @GetMapping("/listaCompras")
-    public ModelAndView listaCompras(){
-        ModelAndView modelAndView = new ModelAndView("estoque/produto/compras");
-        modelAndView.addObject("itensCompra", listaCompras.gerarListaCompras());
+        List<Produto> listaProduto = produtoService.buscar(nome, unidade, estoqueBaixo);
+
+        modelAndView.addObject("listaProduto", listaProduto);
+
+        modelAndView.addObject("nome", nome);
+        modelAndView.addObject("unidade", unidade);
+        modelAndView.addObject("estoqueBaixo", estoqueBaixo);
+
         return modelAndView;
     }
 }
