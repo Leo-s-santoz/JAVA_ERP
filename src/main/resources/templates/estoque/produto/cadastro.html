@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/fundo.css}">
+</head>
+
+<body class="bg-light">
+    <!--Barra Navegação-->
+    <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #0d6efd; border-bottom: 8px solid #ffc107;">
+        <div class="container-fluid px4 fs-5" style="margin: 0 30%">
+
+            <div class="navbar-brand text-white fw-semibold" href="#">
+                Estoque Padaria
+            </div>
+
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-medium active" aria-current="page" href="#">
+                            Início
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-medium" th:href="@{/cadastroProduto}">
+                            Cadastro
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-medium" th:href="@{/estoqueProduto}">
+                            Estoque
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-medium" th:href="@{/movimentacao}">
+                            Movimentação
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="fundo-elipse"></div>
+
+    <!--Conteúdo-->
+    <div class="container py-5 d-flex justify-content-center align-items-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-lg rounded-4 p-4 border-0" style="border-top: 6px solid #ffc107;">
+
+                <h2 class="text-center mb-4 fw-semibold" style="color: #0d6efd;">
+                    Cadastrar Produto
+                </h2>
+
+                <form action="/salvarProduto" th:object="${produto}" method="post">
+
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID</label>
+                        <input readonly="true" th:field="*{id}" type="text" class="form-control" placeholder="#">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input th:field="*{nome}" type="text" class="form-control" placeholder="Nome do produto">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea th:field="*{descricao}" class="form-control" placeholder="Descrição do produto"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quantidadeMinima" class="form-label">Quantidade mínima</label>
+                        <input th:field="*{quantidadeMinima}" type="number" class="form-control" placeholder="Ex: 5">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Preço de Custo</label>
+                        <input type="text" class="form-control money" th:field="*{precoCusto}" placeholder="0.00"
+                            id="precoCusto">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Preço de Venda</label>
+                        <input type="text" class="form-control money" th:field="*{precoVenda}" placeholder="0.00"
+                            id="precoVenda">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Margem de Lucro (%)</label>
+                        <input type="text" class="form-control" id="margemLucro" readonly>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="quantidadeAtual" class="form-label">Quantidade Atual</label>
+
+                        <div class="d-flex gap-2">
+                            <input th:field="*{quantidadeAtual}" type="number" class="form-control"
+                                placeholder="Ex: 20">
+
+                            <select th:field="*{unidade}" class="form-select" style="max-width: 180px;">
+                                <option value="" disabled selected>Unidade</option>
+                                <option value="g">Grama (g)</option>
+                                <option value="kg">Quilograma (kg)</option>
+                                <option value="cx">Caixa (cx)</option>
+                                <option value="dz">Dúzia (dz)</option>
+                                <option value="un">Unidade (un)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn w-100 fw-semibold" style="background-color: #ffc107; color: #000;">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Salvar Produto
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{js/cadastro.js}"></script>
+    <!--Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Font Awesome-->
+    <script src="https://kit.fontawesome.com/228568ab87.js" crossorigin="anonymous"></script>
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>$('.money').mask('000.000.000.000.000,00', { reverse: true });</script>
+
+</body>
+
+</html>
