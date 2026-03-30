@@ -33,12 +33,6 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-medium" th:href="@{/cadastroProduto}">
-                            Cadastro
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
                         <a class="nav-link text-white fw-medium" th:href="@{/estoqueProduto}">
                             Estoque
                         </a>
@@ -125,7 +119,8 @@
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-secondary btn-sm">Colunas</button>
-                    <a th:href="@{/cadastroProduto}" class="btn btn-primary btn-sm">+ Adicionar</a>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalCadastroProduto">+ Adicionar</button>
                 </div>
             </div>
 
@@ -186,12 +181,12 @@
             </a>
         </div>
     </div>
-    <!--Janela modal-->
+    <!--Modal Mov-->
     <div class="modal" id="janela-modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Movimentação</h5>
+                    <h5 class="text-center mb-4 fw-semibold" style="color: #0d6efd;">Movimentação</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{/registrar}" method="post">
@@ -241,12 +236,102 @@
             </div>
         </div>
     </div>
+    <!--Modal Cadastro-->
+    <div class="modal fade" id="modalCadastroProduto" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="text-center mb-4 fw-semibold" style="color: #0d6efd;">
+                        Cadastrar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form action="/salvarProduto" th:object="${produto}" method="post">
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nome</label>
+                            <input th:field="*{nome}" type="text" class="form-control" placeholder="Nome do produto">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descrição</label>
+                            <textarea th:field="*{descricao}" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Quantidade mínima</label>
+                                <input th:field="*{quantidadeMinima}" type="number" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Quantidade Atual</label>
+                                <input th:field="*{quantidadeAtual}" type="number" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Preço de Custo<label>
+                                        <input type="text" class="form-control money" th:field="*{precoCusto}"
+                                            placeholder="0.00" id="precoCusto">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Preço de Venda</label>
+                                <input type="text" class="form-control money" th:field="*{precoVenda}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Margem de Lucro (%)</label>
+                                <input type="text" class="form-control" id="margemLucro" readonly>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Unidade</label>
+                            <select th:field="*{unidade}" class="form-select">
+                                <option value="KG">Quilograma (kg)</option>
+                                <option value="CX">Caixa (cx)</option>
+                                <option value="DZ">Dúzia (dz)</option>
+                                <option value="UN">Unidade (un)</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{js/cadastro.js}"></script>
+
+    <!--Abrir Modal Edit-->
+    <script th:if="${abrirModal}">
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = new bootstrap.Modal(document.getElementById('modalCadastroProduto'));
+            modal.show();
+        });
+    </script>
     <!--Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!--Font Awesome-->
     <script src="https://kit.fontawesome.com/228568ab87.js" crossorigin="anonymous"></script>
     <script th:src="@{js/movimentacao.js}"></script>
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>$('.money').mask('000.000.000.000.000,00', { reverse: true });</script>
 </body>
 
 </html>

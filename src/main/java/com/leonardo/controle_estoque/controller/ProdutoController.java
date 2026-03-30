@@ -24,7 +24,7 @@ public class ProdutoController {
 
     @GetMapping("/cadastroProduto")
     public ModelAndView cadastrar(Produto produto) {
-        ModelAndView modelAndView = new ModelAndView("estoque/produto/cadastro");
+        ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
         modelAndView.addObject("produto", produto);
         return modelAndView;
     }
@@ -37,7 +37,7 @@ public class ProdutoController {
             return cadastrar(produto);
         }
         produtoService.salvar(produto);
-        return new ModelAndView("redirect:/cadastroProduto");
+        return new ModelAndView("redirect:/estoqueProduto");
     }
 
     @GetMapping("/excluirProduto/{id}")
@@ -50,7 +50,14 @@ public class ProdutoController {
     @GetMapping("editarProduto/{id}")
     public ModelAndView editar(@PathVariable("id") Long id) {
         Optional<Produto> produto = produtoRepository.findById(id);
-        return cadastrar(produto.get());
+
+        ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
+
+        modelAndView.addObject("produto", produto);
+        modelAndView.addObject("listaProduto", produtoRepository.findAll());
+        modelAndView.addObject("abrirModal", true);
+
+        return modelAndView;
     }
 
     // remover
@@ -77,9 +84,8 @@ public class ProdutoController {
         ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
 
         List<Produto> listaProduto = produtoService.buscar(nome, unidade, estoqueBaixo);
-
+        modelAndView.addObject("produto", new Produto());
         modelAndView.addObject("listaProduto", listaProduto);
-
         modelAndView.addObject("nome", nome);
         modelAndView.addObject("unidade", unidade);
         modelAndView.addObject("estoqueBaixo", estoqueBaixo);
