@@ -7,12 +7,30 @@
     <title>Cadastrar Produto</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/fundo.css}">
+    <style>
+        body {
+            background-color: #f4f6f8;
+            color: #6c757d;
+        }
+
+        * {
+            border-radius: 0 !important;
+        }
+
+        .card {
+            background-color: #ffffff;
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body class="text-secondary">
     <!--Barra Navegação-->
-    <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #0d6efd; border-bottom: 8px solid #ffc107;">
-        <div class="container-fluid px4 fs-5" style="margin: 0 30%">
+    <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #2f3e4e; border-bottom: 4px solid #d6b25e;">
+        <div class="container-fluid px-4 fs-5">
 
             <div class="navbar-brand text-white fw-semibold" href="#">
                 Estoque Padaria
@@ -33,12 +51,6 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-medium" th:href="@{/cadastroProduto}">
-                            Cadastro
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
                         <a class="nav-link text-white fw-medium" th:href="@{/estoqueProduto}">
                             Estoque
                         </a>
@@ -54,96 +66,125 @@
         </div>
     </nav>
 
-    <div class="fundo-elipse"></div>
+    <div class="container-fluid mt-3 px-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small text-muted mb-2 text-secondary">
+                <li class="breadcrumb-item">Movimentações</li>
+                <li class="breadcrumb-item active" aria-current="page">Histórico</li>
+            </ol>
+        </nav>
+    </div>
 
     <!--Conteúdo-->
-    <div class="container py-5 d-flex justify-content-center">
+    <div class="container-fluid py-4 px-4">
 
-        <div class="card shadow-lg rounded-4 p-3 border-0"
-            style="border-top: 6px solid #ffc107; width: 100%; max-width: 90rem;">
+        <div style="background-color: #eef1f4; padding: 12px;">
+            <div class="card shadow-sm border-0" style="border-top: 3px solid #d6b25e;">
 
-            <h4 class="mb-4 text-center fw-semibold">Histórico de Movimentações</h4>
-
-            <!--Filtros-->
-            <form action="/movimentacao" method="get" class="row g-3 mb-4">
-
-                <div class="col-md-4">
-                    <label class="form-label">Produto</label>
-
-                    <select name="produtoId">
-                        <option value="">Todos</option>
-                        <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.nome}"
-                            th:selected="${produto.id == produtoId}">
-                        </option>
-                    </select>
-
+                <div class="card-body pb-0">
+                    <h5 class="fw-semibold mb-3">Histórico de Movimentações</h5>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="form-label">Tipo</label>
-                    <select name="tipo" class="form-select">
-                        <option value="">Todos</option>
-                        <option value="ENTRADA"
-                            th:selected="${tipo == T(com.leonardo.controle_estoque.utils.TipoMovimentacao).ENTRADA}">
-                            Entrada</option>
-                        <option value="SAIDA"
-                            th:selected="${tipo == T(com.leonardo.controle_estoque.utils.TipoMovimentacao).SAIDA}">
-                            Saída</option>
+                <!--Filtros-->
+                <form action="/movimentacao" method="get" class="row g-3 px-3 pb-3 border-bottom">
 
-                    </select>
+                    <div class="col-md-4">
+                        <label class="form-label">Produto</label>
+
+                        <select name="produtoId" class="form-select" style="border-radius: 0;">
+                            <option value="">Todos</option>
+                            <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.nome}"
+                                th:selected="${produto.id == produtoId}">
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo</label>
+                        <select name="tipo" class="form-select" style="border-radius: 0;">
+                            <option value="">Todos</option>
+                            <option value="ENTRADA"
+                                th:selected="${tipo == T(com.leonardo.controle_estoque.utils.TipoMovimentacao).ENTRADA}">
+                                Entrada</option>
+                            <option value="SAIDA"
+                                th:selected="${tipo == T(com.leonardo.controle_estoque.utils.TipoMovimentacao).SAIDA}">
+                                Saída</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Data</label>
+                        <input name="data" type="date" class="form-control" th:value="${data}"
+                            style="border-radius: 0;">
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-primary w-100" style="opacity: 0.9;">
+                            Filtrar
+                        </button>
+                    </div>
+
+                </form>
+                <div class="d-flex justify-content-between align-items-center px-3 py-3">
+                    <div>
+                        <select class="form-select form-select-sm border-0 bg-body-tertiary"
+                            style="width: 80px; border-radius: 0;">
+                            <option>15</option>
+                            <option>30</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                </div>
+                <!--Tabela-->
+                <div class="table-responsive px-3">
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th>Data</th>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Observação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr th:each="mov : ${listaMovimentacoes}">
+                                <td th:text="${#temporals.format(mov.data, 'dd/MM/yyyy HH:mm')}"></td>
+
+                                <td th:text="${mov.produto.nome}"></td>
+
+                                <td>
+                                    <span class="badge bg-success-subtle text-success"
+                                        th:if="${mov.tipo.name() == 'ENTRADA'}">
+                                        Entrada
+                                    </span>
+
+                                    <span class="badge bg-danger-subtle text-danger"
+                                        th:if="${mov.tipo.name() == 'SAIDA'}">
+                                        Saída
+                                    </span>
+                                </td>
+
+                                <td th:text="${mov.quantidade}"></td>
+
+                                <td th:text="${mov.observacao}"></td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="form-label">Data</label>
-                    <input name="data" type="date" class="form-control" th:value="${data}">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top small text-muted">
+                    <span>Total de registros: <span th:text="${#lists.size(listaMovimentacoes)}"></span></span>
                 </div>
 
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">
-                        Filtrar
-                    </button>
-                </div>
-
-            </form>
-            <!--Tabela-->
-            <table class="table table-hover align-middle">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>Data</th>
-                        <th>Produto</th>
-                        <th>Tipo</th>
-                        <th>Quantidade</th>
-                        <th>Observação</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <tr th:each="mov : ${listaMovimentacoes}">
-                        <td th:text="${#temporals.format(mov.data, 'dd/MM/yyyy HH:mm')}"></td>
-
-                        <td th:text="${mov.produto.nome}"></td>
-
-                        <td>
-                            <span class="badge bg-success" th:if="${mov.tipo.name() == 'ENTRADA'}">
-                                Entrada
-                            </span>
-
-                            <span class="badge bg-danger" th:if="${mov.tipo.name() == 'SAIDA'}">
-                                Saída
-                            </span>
-                        </td>
-
-                        <td th:text="${mov.quantidade}"></td>
-
-                        <td th:text="${mov.observacao}"></td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
+            </div>
         </div>
 
     </div>
