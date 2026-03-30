@@ -1,6 +1,7 @@
 package com.leonardo.controle_estoque.controller;
 
 import com.leonardo.controle_estoque.model.Produto;
+import com.leonardo.controle_estoque.repository.MovimentacaoRepository;
 import com.leonardo.controle_estoque.repository.ProdutoRepository;
 import com.leonardo.controle_estoque.service.ListaCompras;
 import com.leonardo.controle_estoque.service.ProdutoService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,8 @@ public class ProdutoController {
     private ProdutoService produtoService;
     @Autowired
     private ListaCompras listaCompras;
+    @Autowired
+    private MovimentacaoRepository movimentacaoRepository;
 
     @GetMapping("/cadastroProduto")
     public ModelAndView cadastrar(Produto produto) {
@@ -41,9 +45,15 @@ public class ProdutoController {
     }
 
     @GetMapping("/excluirProduto/{id}")
-    public ModelAndView excluir(@PathVariable("id") Long id) {
-        Optional<Produto> produto = produtoRepository.findById(id);
-        produtoRepository.delete(produto.get());
+    public ModelAndView excluir(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+
+        if (movimentacaoRepository.existsById(id)){
+            redirectAttributes.addFlashAttribute("erro", "Não é posível excluir um produto com movimentações " +
+                    "registradas");
+            return new ModelAndView("redirect:/estoqueProduto");
+        }
+        produtoRepository.deleteById(id);
+
         return new ModelAndView("redirect:/estoqueProduto");
     }
 
@@ -60,22 +70,6 @@ public class ProdutoController {
         return modelAndView;
     }
 
-    // remover
-    /*
-     * @GetMapping("/listaCompras")
-     * public ModelAndView listaCompras(){
-     * ModelAndView modelAndView = new ModelAndView("estoque/produto/compras");
-     * modelAndView.addObject("itensCompra", listaCompras.gerarListaCompras());
-     * return modelAndView;
-     * }
-     * 
-     * @GetMapping("/estoqueProduto")
-     * public ModelAndView listar(){
-     * ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
-     * modelAndView.addObject("listaProduto", produtoRepository.findAll());
-     * return modelAndView;
-     * }
-     */
     @GetMapping("/estoqueProduto")
     public ModelAndView filtrarProdutos(
             @RequestParam(required = false) String nome,
