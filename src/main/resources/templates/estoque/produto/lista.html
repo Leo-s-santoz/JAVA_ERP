@@ -12,7 +12,7 @@
 <body class="bg-light">
     <!--Barra Navegação-->
     <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #0d6efd; border-bottom: 8px solid #ffc107;">
-        <div class="container-fluid px4 fs-5" style="margin: 0 30%">
+        <div class="container-fluid px-4 fs-5">
 
             <div class="navbar-brand text-white fw-semibold" href="#">
                 Estoque Padaria
@@ -54,20 +54,29 @@
         </div>
     </nav>
 
-    <div class="fundo-elipse"></div>
+    <div class="container-fluid mt-3 px-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small text-muted mb-2">
+                <li class="breadcrumb-item">Estoque</li>
+                <li class="breadcrumb-item active" aria-current="page">Lista de Produtos</li>
+            </ol>
+        </nav>
+    </div>
 
-    <!--Conteúdo-->
-    <div class="container py-5 d-flex justify-content-center align-items-center">
+    <div class="container-fluid py-4 px-4">
 
-        <div class="card shadow-lg rounded-4 p-1 border-0 justify-content-center align-items-center"
-            style="border-top: 6px solid #ffc107; width: 100%; max-width: 90rem;">
+        <div class="card shadow-sm border-0" style="border-top: 4px solid #ffc107;">
+
+            <div class="card-body pb-0">
+                <h5 class="fw-semibold mb-3">Gestão de Estoque</h5>
+            </div>
 
             <!--Alertas-->
             <div th:if="${sucesso}" class="alert alert-success text-center mt-3" th:text="${sucesso}"></div>
 
             <div th:if="${erro}" class="alert alert-danger text-center mt-3" th:text="${erro}"></div>
 
-            <form method="get" th:action="@{/estoqueProduto}" class="row g-3 mb-4 w-100 px-3">
+            <form method="get" th:action="@{/estoqueProduto}" class="row g-3 px-3 pb-3 border-bottom">
 
                 <!-- Nome -->
                 <div class="col-md-4">
@@ -78,10 +87,11 @@
                 <!-- Unidade -->
                 <div class="col-md-3">
                     <select name="unidade" class="form-select">
-                        <option value="">Unidade</option>
-                        <option value="KG" th:selected="${unidade == 'KG'}">KG</option>
-                        <option value="UN" th:selected="${unidade == 'UN'}">UN</option>
-                        <option value="L" th:selected="${unidade == 'L'}">L</option>
+                        <option value="" disabled selected>Unidade</option>
+                        <option value="KG">Quilograma (kg)</option>
+                        <option value="CX">Caixa (cx)</option>
+                        <option value="DZ">Dúzia (dz)</option>
+                        <option value="UN">Unidade (un)</option>
                     </select>
                 </div>
 
@@ -98,55 +108,80 @@
                 <!-- Botão -->
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        Filtrar
+                        Buscar
                     </button>
                 </div>
 
             </form>
 
-            <!--Tabela-->
-            <table class="table" id="tabela_produtos">
-                <thead>
-                    <tr>
-                        <th scope="col">Nome</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Estoque Atual</th>
-                        <th scope="col">Quantia Mínima</th>
-                        <th scope="col">Medida</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="produto:${listaProduto}"
-                        th:classappend="${produto.quantidadeAtual <= produto.quantidadeMinima} ? 'table-danger'">
-                        <td th:text="${produto.nome}"></td>
-                        <td th:text="${produto.descricao}"></td>
-                        <td th:text="${produto.quantidadeAtual}"></td>
-                        <td th:text="${produto.quantidadeMinima}"></td>
-                        <td th:text="${produto.unidade}"></td>
-                        <td colspan="2">
+            <div class="d-flex justify-content-between align-items-center px-3 py-3">
+                <div>
+                    <select class="form-select form-select-sm" style="width: 80px;">
+                        <option value="" disabled selected>Selecione</option>
+                        <option>15</option>
+                        <option>30</option>
+                        <option>50</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary btn-sm">Colunas</button>
+                    <a th:href="@{/cadastroProduto}" class="btn btn-primary btn-sm">+ Adicionar</a>
+                </div>
+            </div>
 
-                            <a class="p-1" th:href="@{/editarProduto/{id}(id=${produto.id})}"
-                                style="text-decoration: none;">
-                                <i class="fa-solid fa-pen-to-square" style="color: #77bb41;">
-                                </i>Editar</a>
+            <div class="table-responsive px-3">
+                <table class="table table-hover align-middle" id="tabela_produtos">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Estoque Atual</th>
+                            <th scope="col">Quantia Mínima</th>
+                            <th scope="col">Medida</th>
+                            <th scope="col" class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="produto:${listaProduto}"
+                            th:classappend="${produto.quantidadeAtual <= produto.quantidadeMinima} ? 'table-danger'">
+                            <td th:text="${produto.nome}"></td>
+                            <td th:text="${produto.descricao}"></td>
+                            <td th:text="${produto.quantidadeAtual}"></td>
+                            <td th:text="${produto.quantidadeMinima}"></td>
+                            <td th:text="${produto.unidade}"></td>
+                            <td class="text-end">
 
-                            <a class="p-1" th:href="@{/excluirProduto/{id}(id=${produto.id})}"
-                                style="text-decoration: none;">
-                                <i class="fa-solid fa-trash" style="color: #e32400;">
-                                </i>Excluir</a>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a th:href="@{/editarProduto/{id}(id=${produto.id})}"
+                                        class="text-decoration-none text-success d-flex align-items-center gap-1">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <span>Editar</span>
+                                    </a>
 
-                            <a class="p-1" data-bs-toggle="modal" data-bs-target="#janela-modal"
-                                th:data-id="${produto.id}" th:data-nome="${produto.nome}"
-                                th:data-quantidade="${produto.quantidadeAtual}" style="cursor:pointer;">
-                                <i class="fa-solid fa-dolly" style="color: #0d6efd;"></i>
-                                Movimentação
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                    <a th:href="@{/excluirProduto/{id}(id=${produto.id})}"
+                                        class="text-decoration-none text-danger d-flex align-items-center gap-1">
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span>Excluir</span>
+                                    </a>
 
-            <a th:href="@{/listaCompras}" class="btn w-50 fw-semibold" style="background-color: #ffc107; color: black;">
+                                    <a data-bs-toggle="modal" data-bs-target="#janela-modal" th:data-id="${produto.id}"
+                                        th:data-nome="${produto.nome}" th:data-quantidade="${produto.quantidadeAtual}"
+                                        class="text-primary d-flex align-items-center gap-1" style="cursor:pointer;">
+                                        <i class="fa-solid fa-dolly"></i>
+                                        <span>Mov.</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top small text-muted">
+                <span>Total de registros: <span th:text="${#lists.size(listaProduto)}"></span></span>
+            </div>
+
+            <a th:href="@{/listaCompras}" class="btn btn-warning fw-semibold m-3">
                 Gerar Lista de Compras
             </a>
         </div>

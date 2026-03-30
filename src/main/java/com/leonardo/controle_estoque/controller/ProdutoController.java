@@ -23,14 +23,14 @@ public class ProdutoController {
     private ListaCompras listaCompras;
 
     @GetMapping("/cadastroProduto")
-    public ModelAndView cadastrar(Produto produto){
+    public ModelAndView cadastrar(Produto produto) {
         ModelAndView modelAndView = new ModelAndView("estoque/produto/cadastro");
         modelAndView.addObject("produto", produto);
         return modelAndView;
     }
 
     @PostMapping("/salvarProduto")
-    public ModelAndView salvar(Produto produto, BindingResult result){
+    public ModelAndView salvar(Produto produto, BindingResult result) {
         if (result.hasErrors()) {
             System.out.println("erro nas informações");
             result.getAllErrors().forEach(error -> System.out.println(" - " + error.toString()));
@@ -41,40 +41,39 @@ public class ProdutoController {
     }
 
     @GetMapping("/excluirProduto/{id}")
-    public ModelAndView excluir(@PathVariable("id") Long id){
+    public ModelAndView excluir(@PathVariable("id") Long id) {
         Optional<Produto> produto = produtoRepository.findById(id);
         produtoRepository.delete(produto.get());
         return new ModelAndView("redirect:/estoqueProduto");
     }
 
     @GetMapping("editarProduto/{id}")
-    public ModelAndView editar(@PathVariable("id") Long id){
+    public ModelAndView editar(@PathVariable("id") Long id) {
         Optional<Produto> produto = produtoRepository.findById(id);
         return cadastrar(produto.get());
     }
 
-    //remover esse endpoint
-    @GetMapping("/listaCompras")
-    public ModelAndView listaCompras(){
-        ModelAndView modelAndView = new ModelAndView("estoque/produto/compras");
-        modelAndView.addObject("itensCompra", listaCompras.gerarListaCompras());
-        return modelAndView;
-    }
-
+    // remover
     /*
-    @GetMapping("/estoqueProduto")
-    public ModelAndView listar(){
-        ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
-        modelAndView.addObject("listaProduto", produtoRepository.findAll());
-        return modelAndView;
-    }
-    */
+     * @GetMapping("/listaCompras")
+     * public ModelAndView listaCompras(){
+     * ModelAndView modelAndView = new ModelAndView("estoque/produto/compras");
+     * modelAndView.addObject("itensCompra", listaCompras.gerarListaCompras());
+     * return modelAndView;
+     * }
+     * 
+     * @GetMapping("/estoqueProduto")
+     * public ModelAndView listar(){
+     * ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
+     * modelAndView.addObject("listaProduto", produtoRepository.findAll());
+     * return modelAndView;
+     * }
+     */
     @GetMapping("/estoqueProduto")
     public ModelAndView filtrarProdutos(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String unidade,
-            @RequestParam(required = false) Boolean estoqueBaixo
-    ){
+            @RequestParam(required = false) Boolean estoqueBaixo) {
         ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
 
         List<Produto> listaProduto = produtoService.buscar(nome, unidade, estoqueBaixo);
