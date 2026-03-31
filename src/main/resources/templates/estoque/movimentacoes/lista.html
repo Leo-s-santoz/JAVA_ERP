@@ -33,7 +33,7 @@
         <div class="container-fluid px-4 fs-5">
 
             <div class="navbar-brand text-white fw-semibold" href="#">
-                Estoque Padaria
+                StockFlow ERP
             </div>
 
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -128,7 +128,8 @@
 
                 </form>
                 <div class="d-flex justify-content-between align-items-center px-3 py-3">
-                    <div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/movimentacao}" class=" btn btn-outline-dark btn-sm">Limpar Filtros</a>
                         <select class="form-select form-select-sm border-0 bg-body-tertiary"
                             style="width: 80px; border-radius: 0;">
                             <option>15</option>

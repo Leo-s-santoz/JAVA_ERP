@@ -59,7 +59,8 @@ public class ProdutoController {
 
     @GetMapping("editarProduto/{id}")
     public ModelAndView editar(@PathVariable("id") Long id) {
-        Optional<Produto> produto = produtoRepository.findById(id);
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("produto não " +
+                "encontrado"));
 
         ModelAndView modelAndView = new ModelAndView("estoque/produto/lista");
 

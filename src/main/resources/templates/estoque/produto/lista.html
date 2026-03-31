@@ -20,7 +20,7 @@
         <div class="container-fluid px-4 fs-5">
 
             <div class="navbar-brand text-white fw-semibold" href="#">
-                Estoque Padaria
+                StockFlow ERP
             </div>
 
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -113,9 +113,9 @@
                     </div>
 
                 </form>
-
                 <div class="d-flex justify-content-between align-items-center px-3 py-3">
-                    <div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/estoqueProduto}" class=" btn btn-outline-dark btn-sm">Limpar Filtros</a>
                         <select class="form-select form-select-sm border-0 bg-body-tertiary"
                             style="width: 80px; border-radius: 0;">
                             <option value="" disabled selected>Selecione</option>
@@ -125,16 +125,17 @@
                         </select>
                     </div>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-outline-dark btn-sm">Colunas</button>
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#modalCadastroProduto" style="opacity: 0.9;">+ Adicionar</button>
                     </div>
                 </div>
 
+                <!--Tabela-->
                 <div class="table-responsive px-3">
                     <table class="table table-hover align-middle" id="tabela_produtos">
                         <thead class="table-light text-secondary">
                             <tr>
+                                <th scope="col">ID</th>
                                 <th scope="col">Nome</th>
                                 <th scope="col">Descrição</th>
                                 <th scope="col">Estoque Atual</th>
@@ -146,6 +147,7 @@
                         <tbody>
                             <tr th:each="produto:${listaProduto}"
                                 th:classappend="${produto.quantidadeAtual <= produto.quantidadeMinima} ? 'table-danger'">
+                                <td th:text="${produto.id}"></td>
                                 <td th:text="${produto.nome}"></td>
                                 <td th:text="${produto.descricao}"></td>
                                 <td th:text="${produto.quantidadeAtual}"></td>
@@ -247,6 +249,10 @@
                 </div>
                 <form action="/salvarProduto" th:object="${produto}" method="post">
                     <div class="modal-body">
+                        <div class="mb-3">
+                            <input th:field="*{id}" type="hidden" class="form-control" style="border-radius: 0;"
+                                placeholder="#Id">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Nome</label>
                             <input th:field="*{nome}" type="text" class="form-control" style="border-radius: 0;"
